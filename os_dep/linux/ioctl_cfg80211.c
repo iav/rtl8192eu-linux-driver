@@ -5237,7 +5237,7 @@ const char *_nl80211_mesh_power_mode_str[] = {
 #define nl80211_mesh_power_mode_str(_p) ((_p <= NL80211_MESH_POWER_MAX) ? _nl80211_mesh_power_mode_str[_p] : _nl80211_mesh_power_mode_str[0])
 #endif
 
-void dump_station_parameters(void *sel, struct wiphy *wiphy, const struct station_parameters *params)
+static void dump_station_parameters(void *sel, struct wiphy *wiphy, const struct station_parameters *params)
 {
 #if DBG_RTW_CFG80211_STA_PARAM
 	if (params->supported_rates_len) {
@@ -5766,7 +5766,7 @@ exit:
 	return ret;
 }
 
-struct sta_info *rtw_sta_info_get_by_idx(struct sta_priv *pstapriv, const int idx, u8 *asoc_list_num)
+static struct sta_info *rtw_sta_info_get_by_idx(struct sta_priv *pstapriv, const int idx, u8 *asoc_list_num)
 {
 	_list	*phead, *plist;
 	struct sta_info *psta = NULL;
@@ -9805,7 +9805,7 @@ int rtw_hostapd_acs_dump_survey(struct wiphy *wiphy, struct net_device *netdev, 
 #endif /* defined(CONFIG_RTW_HOSTAPD_ACS) && (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 33)) */
 
 #if (KERNEL_VERSION(4, 17, 0) <= LINUX_VERSION_CODE)
-int cfg80211_rtw_external_auth(struct wiphy *wiphy, struct net_device *dev,
+static int cfg80211_rtw_external_auth(struct wiphy *wiphy, struct net_device *dev,
 	struct cfg80211_external_auth_params *params)
 {
 	PADAPTER padapter = (_adapter *)rtw_netdev_priv(dev);
