@@ -3258,7 +3258,7 @@ static void phydm_dump_bb_reg(void *dm_void, u32 *_used, char *output, u32 *_out
 #if (ODM_IC_11N_SERIES_SUPPORT)
 		phydm_dump_bb_reg_n(dm, &used, output, &out_len);
 #else
-		;
+		{ }
 #endif
 #ifdef PHYDM_IC_JGR3_SERIES_SUPPORT
 	else if (dm->support_ic_type & ODM_IC_JGR3_SERIES)
@@ -3268,7 +3268,7 @@ static void phydm_dump_bb_reg(void *dm_void, u32 *_used, char *output, u32 *_out
 #if (ODM_IC_11AC_SERIES_SUPPORT)
 		phydm_dump_bb_reg_ac(dm, &used, output, &out_len);
 #else
-		;
+		{ }
 #endif
 
 	*_used = used;
