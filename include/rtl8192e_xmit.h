@@ -361,7 +361,11 @@ void rtl8192e_cal_txdesc_chksum(u8 *ptxdesc);
 	s32	rtl8192eu_hal_xmitframe_enqueue(_adapter *padapter, struct xmit_frame *pxmitframe);
 	s32 rtl8192eu_xmit_buf_handler(PADAPTER padapter);
 	#define hal_xmit_handler rtl8192eu_xmit_buf_handler
+	#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 9, 0))
+	void rtl8192eu_xmit_tasklet(struct tasklet_struct *t);
+	#else
 	void rtl8192eu_xmit_tasklet(void *priv);
+	#endif
 	s32 rtl8192eu_xmitframe_complete(_adapter *padapter, struct xmit_priv *pxmitpriv, struct xmit_buf *pxmitbuf);
 #endif
 

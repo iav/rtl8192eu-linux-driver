@@ -644,11 +644,18 @@ static void usb_init_recvbuf(_adapter *padapter, struct recv_buf *precvbuf)
 int recvbuf2recvframe(PADAPTER padapter, void *ptr);
 
 #ifdef CONFIG_USE_USB_BUFFER_ALLOC_RX
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 9, 0))
+void usb_recv_tasklet(struct tasklet_struct *t)
+{
+	struct recv_priv	*precvpriv = from_tasklet(precvpriv, t, recv_tasklet);
+	_adapter	*padapter = container_of(precvpriv, _adapter, recvpriv);
+#else
 void usb_recv_tasklet(void *priv)
 {
-	struct recv_buf *precvbuf = NULL;
 	_adapter	*padapter = (_adapter *)priv;
 	struct recv_priv	*precvpriv = &padapter->recvpriv;
+#endif
+	struct recv_buf *precvbuf = NULL;
 
 	while (NULL != (precvbuf = rtw_dequeue_recvbuf(&precvpriv->recv_buf_pending_queue))) {
 		if (RTW_CANNOT_RUN(padapter)) {
@@ -782,11 +789,18 @@ u32 usb_read_port(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *rmem)
 }
 #else	/* CONFIG_USE_USB_BUFFER_ALLOC_RX */
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 9, 0))
+void usb_recv_tasklet(struct tasklet_struct *t)
+{
+	struct recv_priv	*precvpriv = from_tasklet(precvpriv, t, recv_tasklet);
+	_adapter		*padapter = container_of(precvpriv, _adapter, recvpriv);
+#else
 void usb_recv_tasklet(void *priv)
 {
-	_pkt			*pskb;
 	_adapter		*padapter = (_adapter *)priv;
 	struct recv_priv	*precvpriv = &padapter->recvpriv;
+#endif
+	_pkt			*pskb;
 	struct recv_buf	*precvbuf = NULL;
 
 	while (NULL != (pskb = skb_dequeue(&precvpriv->rx_skb_queue))) {

@@ -231,11 +231,18 @@ _exit_recvbuf2recvframe:
 
 
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 9, 0))
+void rtl8192eu_xmit_tasklet(struct tasklet_struct *t)
+{
+	struct xmit_priv *pxmitpriv = from_tasklet(pxmitpriv, t, xmit_tasklet);
+	_adapter *padapter = container_of(pxmitpriv, _adapter, xmitpriv);
+#else
 void rtl8192eu_xmit_tasklet(void *priv)
 {
-	int ret = _FALSE;
 	_adapter *padapter = (_adapter *)priv;
 	struct xmit_priv *pxmitpriv = &padapter->xmitpriv;
+#endif
+	int ret = _FALSE;
 
 	while (1) {
 		if (RTW_CANNOT_TX(padapter)) {
