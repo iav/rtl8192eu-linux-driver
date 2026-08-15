@@ -4569,7 +4569,7 @@ static void read_chip_version_8192e(PADAPTER Adapter)
 	RTW_INFO("%s 0xF0 = 0x%x\n", __FUNCTION__, value32);
 
 	pHalData->version_id.ICType = CHIP_8192E;
-	pHalData->version_id.RFType = (value32 & RF_TYPE_ID) ? RF_2T2R : RF_1T1R;
+	pHalData->version_id.RFType = (value32 & RF_TYPE_ID) ? RF_TYPE_2T2R : RF_TYPE_1T1R;
 	pHalData->version_id.ChipType = ((value32 & RTL_ID) ? TEST_CHIP : NORMAL_CHIP);
 
 	tmpvdr = (value32 & EXT_VENDOR_ID) >> EXT_VENDOR_ID_SHIFT;

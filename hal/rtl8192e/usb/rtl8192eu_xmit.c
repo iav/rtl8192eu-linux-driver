@@ -24,9 +24,13 @@ s32	rtl8192eu_init_xmit_priv(_adapter *padapter)
 	HAL_DATA_TYPE	*pHalData = GET_HAL_DATA(padapter);
 
 #ifdef PLATFORM_LINUX
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 9, 0))
+	tasklet_setup(&pxmitpriv->xmit_tasklet, rtl8192eu_xmit_tasklet);
+#else
 	tasklet_init(&pxmitpriv->xmit_tasklet,
 		     (void(*)(unsigned long))rtl8192eu_xmit_tasklet,
 		     (unsigned long)padapter);
+#endif
 #endif
 	rtl8192e_init_xmit_priv(padapter);
 

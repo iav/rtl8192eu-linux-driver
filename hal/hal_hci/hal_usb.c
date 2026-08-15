@@ -24,9 +24,13 @@ int	usb_init_recv_priv(_adapter *padapter, u16 ini_in_buf_sz)
 	struct recv_buf *precvbuf;
 
 #ifdef PLATFORM_LINUX
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 9, 0))
+	tasklet_setup(&precvpriv->recv_tasklet, usb_recv_tasklet);
+#else
 	tasklet_init(&precvpriv->recv_tasklet,
 		     (void(*)(unsigned long))usb_recv_tasklet,
 		     (unsigned long)padapter);
+#endif
 #endif /* PLATFORM_LINUX */
 
 #ifdef CONFIG_USB_INTERRUPT_IN_PIPE
