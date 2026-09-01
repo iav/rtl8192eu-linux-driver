@@ -6810,6 +6810,7 @@ static s32 cfg80211_rtw_remain_on_channel(struct wiphy *wiphy,
 	struct rtw_wdev_priv *pwdev_priv;
 	struct wifidirect_info *pwdinfo;
 	struct cfg80211_wifidirect_info *pcfg80211_wdinfo;
+	u64 roc_cookie;
 #ifdef CONFIG_CONCURRENT_MODE
 	u8 is_p2p_find = _FALSE;
 #endif
@@ -6845,9 +6846,10 @@ static s32 cfg80211_rtw_remain_on_channel(struct wiphy *wiphy,
 #endif
 
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(7, 3, 0))
-	u64 roc_cookie = cookie; /* value provided by cfg80211 */
+	roc_cookie = cookie; /* cfg80211 assigns the cookie and expects it unchanged */
 #else
-	u64 roc_cookie = atomic_inc_return(&pcfg80211_wdinfo->ro_ch_cookie_gen);
+	roc_cookie = atomic_inc_return(&pcfg80211_wdinfo->ro_ch_cookie_gen);
+	*cookie = roc_cookie; /* cfg80211 reads the cookie back through the pointer */
 #endif
 
 	RTW_INFO(FUNC_ADPT_FMT"%s ch:%u duration:%d, cookie:0x%llx\n"
@@ -7438,6 +7440,7 @@ static int cfg80211_rtw_mgmt_tx(struct wiphy *wiphy,
 	struct dvobj_priv *dvobj;
 	struct rtw_wdev_priv *pwdev_priv;
 	struct rf_ctl_t *rfctl;
+	u64 tx_cookie;
 
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 6, 0))
 	#if defined(RTW_DEDICATED_P2P_DEVICE)
@@ -7483,9 +7486,10 @@ static int cfg80211_rtw_mgmt_tx(struct wiphy *wiphy,
 
 	/* cookie generation */
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(7, 3, 0))
-	u64 tx_cookie = cookie; /* value provided by cfg80211 */
+	tx_cookie = cookie; /* cfg80211 assigns the cookie and expects it unchanged */
 #else
-	u64 tx_cookie = pwdev_priv->mgmt_tx_cookie++;
+	tx_cookie = pwdev_priv->mgmt_tx_cookie++;
+	*cookie = tx_cookie; /* cfg80211 reads the cookie back through the pointer */
 #endif
 
 #ifdef CONFIG_DEBUG_CFG80211
